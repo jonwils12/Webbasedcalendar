@@ -1,0 +1,98 @@
+from tkinter import *
+import calendar
+
+def on_day_click(day):
+    selected_day_label.config(text=f"Selected Day: {day}")
+
+def add_event():
+    day = int(selected_day_label.cget("text").split(": ")[1])
+    event = event_entry.get()
+
+    if day != "":
+        event_label = Label(events_frame, text=f"{day}: {event}")
+        event_label.pack(anchor=W)
+        event_labels.append(event_label)
+
+def show_calendar():
+    year = int(year_entry.get())
+    month = int(month_entry.get())
+    cal = calendar.monthcalendar(year, month)
+
+    # Clear existing calendar
+    for label in day_labels:
+        label.destroy()
+
+    # Generate day labels
+    for week in cal:
+        for day in week:
+            label = Label(calendar_frame, text=str(day) if day != 0 else "")
+            if day != 0:
+                label.bind("<Button-1>", lambda e, d=day: on_day_click(d))
+            label.pack(side=LEFT)
+            day_labels.append(label)
+
+def clear_events():
+    for label in event_labels:
+        label.destroy()
+    event_labels.clear()
+
+# Create the main window
+root = Tk()
+root.title("Calendar App")
+
+# Create the calendar frame
+calendar_frame = Frame(root)
+calendar_frame.pack()
+
+# Create the year and month input fields
+input_frame = Frame(root)
+input_frame.pack(pady=10)
+
+year_label = Label(input_frame, text="Year:")
+year_label.pack(side=LEFT)
+
+year_entry = Entry(input_frame)
+year_entry.pack(side=LEFT)
+
+month_label = Label(input_frame, text="Month:")
+month_label.pack(side=LEFT)
+
+month_entry = Entry(input_frame)
+month_entry.pack(side=LEFT)
+
+# Create the button to show the calendar
+show_button = Button(root, text="Show Calendar", command=show_calendar)
+show_button.pack()
+
+# Create the label to display the selected day
+selected_day_label = Label(root, text="Selected Day:")
+selected_day_label.pack(pady=10)
+
+# Create the events frame
+events_frame = Frame(root)
+events_frame.pack()
+
+# Create the event input fields
+event_input_frame = Frame(root)
+event_input_frame.pack(pady=10)
+
+event_label = Label(event_input_frame, text="Event:")
+event_label.pack(side=LEFT)
+
+event_entry = Entry(event_input_frame)
+event_entry.pack(side=LEFT)
+
+# Create the button to add an event
+add_event_button = Button(root, text="Add Event", command=add_event)
+add_event_button.pack()
+
+# Create the button to clear events
+clear_events_button = Button(root, text="Clear Events", command=clear_events)
+clear_events_button.pack()
+
+# List to store day labels
+day_labels = []
+event_labels = []
+
+# Run the GUI main loop
+root.mainloop()
